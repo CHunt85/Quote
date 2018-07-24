@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <title>Quote</title>
+</head>
+<body>
+    {% load humanize %}
+    <form action='/wish' method ='POST'>
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-text">
+                Welcome {{request.session.user_firstname}}
+            </span>
+            <a href="/edit"><button class="btn btn-sm btn-outline-primary" type="button">Edit your profile</button></a>
+            <a href="/logout"><button class="btn btn-sm btn-outline-secondary" type="button">Log Out</button></a>
+    </nav>
+    </form>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+
+    <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Add a Quote</h5>
+              <form action='/add_fun' method ='POST'>
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="exampleFormControlInput1">Author</label>
+                  <input type="text"  name="content1" class="form-control" placeholder="Author">
+                </div>
+                <div class="form-group">
+                        <label for="exampleFormControlInput1">Quote</label>
+                        <input type="text"  name="content2" class="form-control" placeholder="Quote">
+                      </div>
+                <input class="btn btn-primary" type="submit" value="Add">
+              </form>
+            </div>
+          </div>
+          {% for a in auth %} 
+    {% for i in message %}
+    <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h2>{{a.name}}</h2>
+
+              <p class="card-text">{{i.post}}</p>
+              {% for x in main_u %}
+                      <a href="/info/{{x.id}}">{{ x.user_firstname }}</a>
+                      {% if x.quote.email == request.session.user_email %}
+                          <td><form action="/destroy" method="POST">
+                                  <input type='hidden' name="product" value="{{x.id}}">
+                                  <input type='hidden' name="email" value="{{request.session.user_email}}">
+                                  {% csrf_token %}
+                                  <input type="submit" value="Delete" class="btn btn-danger btn-md"></td>  
+                          </form>
+                      {% else %}
+                          <td><form action="/like" method="POST">
+                              <input type='hidden' name="product" value="{{x.id}}">
+                              <input type='hidden' name="email" value="{{request.session.user_email}}">
+                              {% csrf_token %}
+                              <input type="submit" value="Like" class="btn btn-warning btn-md"></td>
+                          </form>
+                      {% endif %}
+              </tr>
+              {% endfor %}
+            </div>
+          </div>
+    {% endfor %}
+    {% endfor %}
+</body>
+</html>
